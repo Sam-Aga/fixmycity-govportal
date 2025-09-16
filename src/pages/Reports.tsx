@@ -16,11 +16,16 @@ import {
   Eye
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { toast } from "sonner";
 
 const Reports = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+
+  const handleViewReport = (reportId: string) => {
+    toast.success(`Opening detailed view for ${reportId}`);
+  };
 
   // Mock data - will be replaced with real data from Supabase
   const reports = [
@@ -241,16 +246,30 @@ const Reports = () => {
 
                     {/* Actions */}
                     <div className="flex flex-col space-y-2">
-                      <Button variant="outline" size="sm" className="w-full">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => handleViewReport(report.id)}
+                      >
                         <Eye className="h-4 w-4 mr-2" />
                         View Details
                       </Button>
-                      <Button variant="outline" size="sm" className="w-full">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => toast.success(`Opening map for ${report.location}`)}
+                      >
                         <MapPin className="h-4 w-4 mr-2" />
                         View on Map
                       </Button>
                       {report.status === "pending" && (
-                        <Button size="sm" className="w-full">
+                        <Button 
+                          size="sm" 
+                          className="w-full"
+                          onClick={() => toast.success(`Assigning team for ${report.id}`)}
+                        >
                           Assign Team
                         </Button>
                       )}

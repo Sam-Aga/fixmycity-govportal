@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,8 +13,15 @@ import {
   Target
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { toast } from "sonner";
 
 const Analytics = () => {
+  const [timeFilter, setTimeFilter] = useState("thisMonth");
+
+  const handleTimeFilterChange = (value: string) => {
+    setTimeFilter(value);
+    toast.success(`Showing analytics for: ${value.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+  };
   // Mock analytics data - will be replaced with real data from Supabase
   const analytics = {
     thisMonth: {
@@ -76,7 +84,7 @@ const Analytics = () => {
               </p>
             </div>
             
-            <Select defaultValue="thisMonth">
+            <Select value={timeFilter} onValueChange={handleTimeFilterChange}>
               <SelectTrigger className="w-48">
                 <SelectValue />
               </SelectTrigger>

@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,11 +11,15 @@ import {
   MapPin,
   TrendingUp,
   Calendar,
-  BarChart3
+  BarChart3,
+  Eye
 } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { toast } from "sonner";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  
   // Mock data - will be replaced with real data from Supabase
   const stats = {
     totalReports: 1247,
@@ -48,6 +54,14 @@ const Dashboard = () => {
       dateSubmitted: "1 day ago"
     }
   ];
+
+  const handleViewAllReports = () => {
+    navigate("/reports");
+  };
+
+  const handleViewReport = (reportId: string) => {
+    toast.success(`Viewing report ${reportId}`);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -147,7 +161,7 @@ const Dashboard = () => {
                     Latest civic issues submitted by citizens
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleViewAllReports}>
                   View All Reports
                 </Button>
               </div>
@@ -155,7 +169,7 @@ const Dashboard = () => {
             <CardContent>
               <div className="space-y-4">
                 {recentReports.map((report) => (
-                  <div key={report.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                  <div key={report.id} className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
                     <div className="flex items-center space-x-4">
                       <div className="p-2 bg-muted rounded-full">
                         {report.type === "Pothole" && <AlertTriangle className="h-4 w-4" />}
@@ -177,9 +191,19 @@ const Dashboard = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
-                      <span>{report.dateSubmitted}</span>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                        <Calendar className="h-3 w-3" />
+                        <span>{report.dateSubmitted}</span>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleViewReport(report.id)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        View
+                      </Button>
                     </div>
                   </div>
                 ))}

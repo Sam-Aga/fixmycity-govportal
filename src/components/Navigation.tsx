@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -11,16 +12,18 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
     { 
       name: "Dashboard", 
       icon: LayoutDashboard, 
-      href: "/dashboard", 
-      active: true 
+      href: "/dashboard"
     },
     { 
       name: "Reports", 
@@ -39,6 +42,16 @@ export const Navigation = () => {
       href: "/settings" 
     },
   ];
+
+  const handleNavigation = (href: string) => {
+    navigate(href);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
 
   return (
     <nav className="bg-card border-b border-border shadow-sm">
@@ -59,12 +72,14 @@ export const Navigation = () => {
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const isActive = location.pathname === item.href;
               return (
                 <Button
                   key={item.name}
-                  variant={item.active ? "default" : "ghost"}
+                  variant={isActive ? "default" : "ghost"}
                   className="relative"
                   size="sm"
+                  onClick={() => handleNavigation(item.href)}
                 >
                   <Icon className="h-4 w-4 mr-2" />
                   {item.name}
@@ -87,7 +102,7 @@ export const Navigation = () => {
               <span className="text-sm font-medium">John Smith</span>
               <span className="text-xs text-muted-foreground">City Inspector</span>
             </div>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
             </Button>
             
@@ -113,12 +128,14 @@ export const Navigation = () => {
             <div className="space-y-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
+                const isActive = location.pathname === item.href;
                 return (
                   <Button
                     key={item.name}
-                    variant={item.active ? "default" : "ghost"}
+                    variant={isActive ? "default" : "ghost"}
                     className="w-full justify-start relative"
                     size="sm"
+                    onClick={() => handleNavigation(item.href)}
                   >
                     <Icon className="h-4 w-4 mr-2" />
                     {item.name}
